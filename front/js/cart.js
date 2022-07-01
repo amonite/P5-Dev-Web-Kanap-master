@@ -149,3 +149,40 @@ function loadData(){
 
 loadData();
 
+let orderBtn = document.getElementById("order");
+orderBtn.addEventListener("click", function(){
+    getFormData();
+})
+
+function getFormData(){
+    let contact = {};
+
+    contact.prenom = document.getElementById("firstName").value;
+    if(!contact.prenom.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
+        let p = document.getElementById("firstNameErrorMsg");
+        p.innerText = "veillez entrer un prénom qui ne comporte pas de caractères numériques";
+    }
+    
+    contact.nom = document.getElementById("lastName").value;
+    if(!contact.nom.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
+        let p = document.getElementById("lastNameErrorMsg");
+        p.innerText = "veillez entrer un nom qui ne comporte pas de caractères numériques";
+    }
+
+    contact.ville = document.getElementById("lastName").value;
+    if(!contact.ville.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
+        let p = document.getElementById("cityErrorMsg");
+        p.innerText = "veillez entrer un nom de ville";
+    }
+
+    contact.adresse = document.getElementById("address").value;
+    if(!contact.adresse.match(/^([1-9][0-9]*(?:-[1-9][0-9]*)*)[\s,-]+(?:(bis|ter|qua)[\s,-]+)?([\w]+[\-\w]*)[\s,]+([-\w].+)$/gmiu)){
+        let p = document.getElementById("addressErrorMsg");
+        p.innerText = "veillez entrer une adresse postale valide";
+    }
+    contact.email = document.getElementById("email").value;
+    if(!contact.email.match(/^([a-z]|[0-9]|\-|\_|\+|\.)+\@([a-z]|[0-9]){2,}\.[a-z]{2,}(\.[a-z]{2,})?$/gm)){
+        let p = document.getElementById("emailErrorMsg");
+        p.innerText = "veillez entrez une adresse email valide";
+    }
+}
