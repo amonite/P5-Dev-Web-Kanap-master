@@ -115,6 +115,28 @@ function loadData(){
             pDel.innerText = "Supprimer";
             div_itemContentSettingsDelete.appendChild(pDel);
 
+            pDel.addEventListener("click", function(){
+                let kanaps = JSON.parse(localStorage.getItem("cart"));
+                let article = this.closest("article");
+                let id = article.getAttribute("data-id");
+                let color = article.getAttribute("data-color");
+
+                console.log("clicked id = "+ id);
+                console.log("clicked color = "+ color);
+
+                for(k=0; k<kanaps.length; k++){
+                    if(id == kanaps[k].id && color == kanaps[k].color){
+                        
+                        kanaps.splice(k,1);
+                        localStorage.setItem("cart", JSON.stringify(kanaps));
+                    }
+                }
+
+                article.remove();
+
+
+            });
+
         }
 
     }
@@ -127,14 +149,3 @@ function loadData(){
 
 loadData();
 
-// function getNewData(){
-//     let items = document.getElementsByClassName("cart__item");
-//     let ids = [];
-//     let kanap = {};
-//     for(i=0; i<items.length; i++){
-//         ids[i] = items[i].getAttribute("data-id");
-//         console.log("ids = "+ids[i]);
-//     }
-// }
-
-// getNewData();
