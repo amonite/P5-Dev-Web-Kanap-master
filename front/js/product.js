@@ -63,8 +63,8 @@ else{
 
 
  
-// declare kanap object inside function because objects are passed by reference
-// I was going crazy because array.push overwrites elements if declared outside addToCart() !!!
+// declare kanap object inside function because objects are passed by reference.
+// array.push overwrites elements if kanap is declared outside addToCart() !!!
 
 async function addToCart(){
     console.log("button clicked !") // debug 

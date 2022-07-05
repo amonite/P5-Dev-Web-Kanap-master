@@ -149,34 +149,76 @@ function loadData(){
 
 loadData();
 
+function getIDs(){
+    
+    let items = document.getElementsByClassName("cart__item");
+    let ids = [];
+    for(i=0; i<items.length; i++){
+        ids[i] = items[i].getAttribute("data-id");
+        console.log("ids = "+ids[i]);
+    }
+
+    return ids
+}
+
 let orderBtn = document.getElementById("order");
-orderBtn.addEventListener("click", function(){
-    getFormData();
+
+orderBtn.addEventListener("click", function(e){
+    e.preventDefault();
+    let contact = getFormData();
+    console.log("contact = "+contact);
+    let products = getIDs();//JSON.parse(localStorage.getItem("cart"));//getCart(); 
+    console.log("getIDs = "+products);
+
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json;charset=utf-8"
+        },
+        body: JSON.stringify({contact:contact, products:products}) 
+        })
+        .then(function(res){
+            if(res.ok){
+            console.log("res1 = "+res.json);
+            return res.json()
+            }
+        })
+        .then(function(data){
+            console.log("data = "+data);
+            console.log("order id = "+data.orderId);
+        })
+
+        .catch(function(error){
+        console.log("error = "+error);
+    })
+    
+    //get order id in response
+    //goto confirmation page and pass order id in url
 })
 
 function getFormData(){
     let contact = {};
 
-    contact.prenom = document.getElementById("firstName").value;
-    if(!contact.prenom.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
+    contact.firstName = document.getElementById("firstName").value;
+    if(!contact.firstName.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
         let p = document.getElementById("firstNameErrorMsg");
-        p.innerText = "veillez entrer un prénom qui ne comporte pas de caractères numériques";
+        p.innerText = "veillez entrer un prélastName qui ne comporte pas de caractères numériques";
     }
     
-    contact.nom = document.getElementById("lastName").value;
-    if(!contact.nom.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
+    contact.lastName = document.getElementById("lastName").value;
+    if(!contact.lastName.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
         let p = document.getElementById("lastNameErrorMsg");
-        p.innerText = "veillez entrer un nom qui ne comporte pas de caractères numériques";
+        p.innerText = "veillez entrer un lastName qui ne comporte pas de caractères numériques";
     }
 
-    contact.ville = document.getElementById("lastName").value;
-    if(!contact.ville.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
+    contact.city = document.getElementById("lastName").value;
+    if(!contact.city.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
         let p = document.getElementById("cityErrorMsg");
-        p.innerText = "veillez entrer un nom de ville";
+        p.innerText = "veillez entrer un lastName de city";
     }
 
-    contact.adresse = document.getElementById("address").value;
-    if(!contact.adresse.match(/^([1-9][0-9]*(?:-[1-9][0-9]*)*)[\s,-]+(?:(bis|ter|qua)[\s,-]+)?([\w]+[\-\w]*)[\s,]+([-\w].+)$/gmiu)){
+    contact.address = document.getElementById("address").value;
+    if(!contact.address.match(/^([1-9][0-9]*(?:-[1-9][0-9]*)*)[\s,-]+(?:(bis|ter|qua)[\s,-]+)?([\w]+[\-\w]*)[\s,]+([-\w].+)$/gmiu)){
         let p = document.getElementById("addressErrorMsg");
         p.innerText = "veillez entrer une adresse postale valide";
     }
@@ -185,4 +227,11 @@ function getFormData(){
         let p = document.getElementById("emailErrorMsg");
         p.innerText = "veillez entrez une adresse email valide";
     }
+
+    return contact;
+}
+
+function getCart(){
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    return cart;
 }

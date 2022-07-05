@@ -55,7 +55,7 @@ function getData(){
         })
         .catch(function(error){
             console.log("punaise ! " + error);
-        })
+    })
 
 }
 
