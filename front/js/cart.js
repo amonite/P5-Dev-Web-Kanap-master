@@ -163,38 +163,72 @@ function getIDs(){
 
 let orderBtn = document.getElementById("order");
 
-orderBtn.addEventListener("click", function(e){
+// function getOrderID(contact,products){
+//     let res = fetch("http://localhost:3000/api/products/order", {
+//         method: "POST",
+//         headers: {
+//             'Content-Type': "application/json;charset=utf-8"
+//         },
+//         body: JSON.stringify({contact:contact, products:products}) 
+//     });
+//     let data = res.json();
+//     console.log("order id = "+data.orderId);
+//     let input = document.getElementById("order");
+//     input.setAttribute("formaction", "./confirmation.html?id="+data.orderId);
+    
+// }
+
+// orderBtn.addEventListener("click", getOrderID(getFormData, getIDs));
+
+orderBtn.addEventListener("click", async function(e){
     e.preventDefault();
     let contact = getFormData();
     console.log("contact = "+contact);
     let products = getIDs();//JSON.parse(localStorage.getItem("cart"));//getCart(); 
     console.log("getIDs = "+products);
-
-    fetch("http://localhost:3000/api/products/order", {
+    let res = await fetch("http://localhost:3000/api/products/order", {
         method: "POST",
         headers: {
             'Content-Type': "application/json;charset=utf-8"
         },
         body: JSON.stringify({contact:contact, products:products}) 
-        })
-        .then(function(res){
-            if(res.ok){
-            console.log("res1 = "+res.json);
-            return res.json()
-            }
-        })
-        .then(function(data){
-            console.log("data = "+data);
-            console.log("order id = "+data.orderId);
-        })
+    });
+    let data = await res.json();
+    console.log("order id = "+data.orderId);
+    window.location.assign("./confirmation.html?id="+data.orderId);
+    //get order id in POST response
+    // fetch("http://localhost:3000/api/products/order", {
+    //     method: "POST",
+    //     headers: {
+    //         'Content-Type': "application/json;charset=utf-8"
+    //     },
+    //     body: JSON.stringify({contact:contact, products:products}) 
+    //     })
+    //     .then(function(res){
+    //         if(res.ok){
+    //         console.log("res1 = "+res.json);
+    //         return res.json()
+    //         }
+    //     })
+    //     .then(function(data){
+    //         console.log("data = "+data);
+    //         console.log("order id = "+data.orderId);
+            
+    //         let input = document.getElementById("order");
+    //         input.setAttribute("formaction", "./confirmation.html?id="+data.orderId);
+            
+    //         // console.log("input attribute = "+input.getAttribute("formaction"));
+    //     })
 
-        .catch(function(error){
-        console.log("error = "+error);
-    })
-    
-    //get order id in response
+    //     .catch(function(error){
+    //     console.log("error = "+error);
+    // })
+
+    // let input = document.getElementById("order");
+    // input.setAttribute("formaction", "./confirmation.html?id="+data.orderId);
+    // return true;
     //goto confirmation page and pass order id in url
-})
+});
 
 function getFormData(){
     let contact = {};
