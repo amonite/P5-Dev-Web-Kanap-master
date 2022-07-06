@@ -5,7 +5,7 @@ console.log("hello");
 // document.getElementById('cart__items').innerText = "test !";
 
 
-function loadData(){
+async function loadData(){
     
     if(localStorage.length !== 0){
         let kanapList = [];
@@ -33,7 +33,9 @@ function loadData(){
             div_itemContentDesc.classList.add("cart__item__content__description");
             div_itemContent.appendChild(div_itemContentDesc);
 
-            fetch("http://localhost:3000/api/products/"+kanapList[k].id)
+            let pPrice; // hack to get the price to display after the color 
+
+            await fetch("http://localhost:3000/api/products/"+kanapList[k].id)
                 .then(function(res){
                     if(res.ok){
                         console.log("res ok");
@@ -52,20 +54,26 @@ function loadData(){
                     let h2 = document.createElement("h2");
                     h2.innerText = data.name;
                     div_itemContentDesc.appendChild(h2);
+                    // get color
+                    // ...
                     // get price
-                    let pPrice = document.createElement("p");
+                    pPrice = document.createElement("p");
                     pPrice.innerText = data.price;
-                    div_itemContentDesc.appendChild(pPrice);
+                    
+                    // div_itemContentDesc.appendChild(pPrice);
                     
                 })
                 .catch(function(error){
                     console.log("error fetching data !!!!");
             })
             
-            // get color
+            // // get color
             let pColor = document.createElement("p");
             pColor.innerText = kanapList[k].color;
             div_itemContentDesc.appendChild(pColor);
+
+            div_itemContentDesc.appendChild(pPrice); //!!!! placed here in order to display price after color !
+
 
             // get quantity
             let div_itemContentSettings = document.createElement("div");
@@ -85,6 +93,10 @@ function loadData(){
             input.setAttribute("max", "100");
             input.setAttribute("value", kanapList[k].quantity);
 
+
+            let originalPrice = pPrice.innerText;
+
+
             input.addEventListener("change", function(){
                 let kanaps = JSON.parse(localStorage.getItem("cart"));
                 let article = this.closest("article")
@@ -101,7 +113,18 @@ function loadData(){
                         localStorage.setItem("cart", JSON.stringify(kanaps));
                     }
                 } 
+                let art = this.closest("article");
+                
+                let divQuantity = this.parentElement;
+                // divQuantity.innerText = "fuck!";
+                let divSettings = divQuantity.parentElement;
+                // divSettings.style.backgroundColor = "#000000";
+                let divDesc = divSettings.previousElementSibling;
+                // divDesc.style.border = "2px solid red";
+                let nodes = divDesc.childNodes;
+                nodes[2].innerText = (parseInt(originalPrice)*this.value).toString();
                
+
             });
 
             div_itemContentSettingsQauntity.appendChild(input);
@@ -145,7 +168,7 @@ function loadData(){
     }
 }
 
-
+let totalPrice = document.getElementById("totalPrice");
 
 loadData();
 
@@ -183,19 +206,22 @@ let orderBtn = document.getElementById("order");
 orderBtn.addEventListener("click", async function(e){
     e.preventDefault();
     let contact = getFormData();
-    console.log("contact = "+contact);
-    let products = getIDs();//JSON.parse(localStorage.getItem("cart"));//getCart(); 
-    console.log("getIDs = "+products);
-    let res = await fetch("http://localhost:3000/api/products/order", {
-        method: "POST",
-        headers: {
-            'Content-Type': "application/json;charset=utf-8"
-        },
-        body: JSON.stringify({contact:contact, products:products}) 
-    });
-    let data = await res.json();
-    console.log("order id = "+data.orderId);
-    window.location.assign("./confirmation.html?id="+data.orderId);
+    if(contact !== false){
+        console.log("contact = "+contact);
+        let products = getIDs();//JSON.parse(localStorage.getItem("cart"));//getCart(); 
+        console.log("getIDs = "+products);
+
+        let res = await fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json;charset=utf-8"
+            },
+            body: JSON.stringify({contact:contact, products:products}) 
+        });
+        let data = await res.json();
+        console.log("order id = "+data.orderId);
+        window.location.assign("./confirmation.html?id="+data.orderId);
+    }   
     //get order id in POST response
     // fetch("http://localhost:3000/api/products/order", {
     //     method: "POST",
@@ -236,33 +262,64 @@ function getFormData(){
     contact.firstName = document.getElementById("firstName").value;
     if(!contact.firstName.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
         let p = document.getElementById("firstNameErrorMsg");
-        p.innerText = "veillez entrer un prélastName qui ne comporte pas de caractères numériques";
+        p.innerText = "veillez entrer un prénom qui ne comporte pas de caractères numériques";
+        contact.firstName = "";
+    }
+    else{
+        contact.firstName = document.getElementById("firstName").value;
+
     }
     
     contact.lastName = document.getElementById("lastName").value;
     if(!contact.lastName.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
         let p = document.getElementById("lastNameErrorMsg");
-        p.innerText = "veillez entrer un lastName qui ne comporte pas de caractères numériques";
+        p.innerText = "veillez entrer un nom qui ne comporte pas de caractères numériques";
+        contact.lastName = "";
+    }
+    else{
+        contact.lastName = document.getElementById("lastName").value;
+
     }
 
     contact.city = document.getElementById("lastName").value;
     if(!contact.city.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
         let p = document.getElementById("cityErrorMsg");
-        p.innerText = "veillez entrer un lastName de city";
+        p.innerText = "veillez entrer un nom de ville";
+        contact.city = "";
+    }
+    else{
+        contact.city = document.getElementById("lastName").value;
+
     }
 
     contact.address = document.getElementById("address").value;
     if(!contact.address.match(/^([1-9][0-9]*(?:-[1-9][0-9]*)*)[\s,-]+(?:(bis|ter|qua)[\s,-]+)?([\w]+[\-\w]*)[\s,]+([-\w].+)$/gmiu)){
         let p = document.getElementById("addressErrorMsg");
         p.innerText = "veillez entrer une adresse postale valide";
+        contact.address = "";
+    }
+    else{
+        contact.address = document.getElementById("address").value;
+
     }
     contact.email = document.getElementById("email").value;
     if(!contact.email.match(/^([a-z]|[0-9]|\-|\_|\+|\.)+\@([a-z]|[0-9]){2,}\.[a-z]{2,}(\.[a-z]{2,})?$/gm)){
         let p = document.getElementById("emailErrorMsg");
         p.innerText = "veillez entrez une adresse email valide";
+        contact.email = "";
     }
+    else{
+        contact.email = document.getElementById("email").value;
 
-    return contact;
+    }
+    if(contact.firstName !=="" && contact.lastName !=="" && contact.city !=="" && contact.address !=="" && contact.email !==""){
+        return contact;
+
+    }
+    else{
+        return false;
+    }
+    // return contact;
 }
 
 function getCart(){
