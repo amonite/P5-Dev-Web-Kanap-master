@@ -93,9 +93,10 @@ async function loadData(){
             input.setAttribute("max", "100");
             input.setAttribute("value", kanapList[k].quantity);
 
-
+            // Store original product price to calculate total 
             let originalPrice = pPrice.innerText;
 
+            
 
             input.addEventListener("change", function(){
                 let kanaps = JSON.parse(localStorage.getItem("cart"));
@@ -113,8 +114,8 @@ async function loadData(){
                         localStorage.setItem("cart", JSON.stringify(kanaps));
                     }
                 } 
-                let art = this.closest("article");
                 
+                // get price element 
                 let divQuantity = this.parentElement;
                 // divQuantity.innerText = "fuck!";
                 let divSettings = divQuantity.parentElement;
@@ -122,7 +123,34 @@ async function loadData(){
                 let divDesc = divSettings.previousElementSibling;
                 // divDesc.style.border = "2px solid red";
                 let nodes = divDesc.childNodes;
+                let previousPrice = parseInt(nodes[2].innerText);
                 nodes[2].innerText = (parseInt(originalPrice)*this.value).toString();
+                let currentPrice = previousPrice - parseInt(nodes[2].innerText);
+                if(Math.sign(currentPrice) == 1){
+                    totalPrice.innerText = (parseInt(totalPrice.innerText)-currentPrice).toString(); 
+                }
+                else if(Math.sign(currentPrice) == -1){
+                    totalPrice.innerText = (parseInt(totalPrice.innerText)+(currentPrice)*-1).toString();
+                }
+                console.log("currentPrice = "+currentPrice);
+                // totalPrice.innerText = (parseInt(totalPrice.innerText)+parseInt(nodes[2].innerText));
+                
+                // let allPrices = document.getElementsByClassName("cart__item__content__description");
+                
+                // console.log("allPrices ="+allPrices.length);
+                // let nodes2 = [];
+                // for(i=0; i<allPrices.length; i++){
+                //     nodes2[i] = allPrices[i].childNodes;
+                // }
+                // console.log("nodes = "+nodes2[0][2].innerText);
+                // let priceArray = [];
+                // let finalPrice = 0;
+                // for(n=0; n<nodes2.length ;n++){
+                //     priceArray[n] = nodes[n][2].innerText;
+                //     console.log("final array = "+ priceArray[n]);
+                //     finalPrice = finalPrice + parseInt(priceArray[n]);
+                // }
+                // totalPrice.innerText = finalPrice;
                
 
             });
@@ -166,9 +194,31 @@ async function loadData(){
     else{
         console.log("LS empty !");
     }
+    // let totalPrice = document.getElementById("totalPrice");
+    let allPrices = document.getElementsByClassName("cart__item__content__description");
+    
+    console.log("allPrices ="+allPrices.length);
+    let nodes = [];
+    for(i=0; i<allPrices.length; i++){
+        nodes[i] = allPrices[i].childNodes;
+    }
+    console.log("nodes = "+nodes[0][2].innerText);
+    let priceArray = [];
+    let finalPrice = 0;
+    for(n=0; n<nodes.length ;n++){
+        priceArray[n] = nodes[n][2].innerText;
+        console.log("final array = "+ priceArray[n]);
+        finalPrice = finalPrice + parseInt(priceArray[n]);
+    }
+    console.log("final price = "+finalPrice);
+    totalPrice.innerText = finalPrice;
 }
 
+
+
 let totalPrice = document.getElementById("totalPrice");
+
+
 
 loadData();
 
