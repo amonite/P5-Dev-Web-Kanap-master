@@ -117,7 +117,7 @@ async function loadData(){
                 
                 // get price element 
                 let divQuantity = this.parentElement;
-                // divQuantity.innerText = "fuck!";
+                
                 let divSettings = divQuantity.parentElement;
                 // divSettings.style.backgroundColor = "#000000";
                 let divDesc = divSettings.previousElementSibling;
@@ -183,6 +183,28 @@ async function loadData(){
                     }
                 }
 
+                // get price element 
+                // let divQuantity = this.parentElement;
+                
+                // let divSettings = divQuantity.parentElement;
+                // // divSettings.style.backgroundColor = "#000000";
+                // let divDesc = divSettings.previousElementSibling;
+                // // divDesc.style.border = "2px solid red";
+                // let nodes = divDesc.childNodes;
+                // let previousPrice = parseInt(nodes[2].innerText);
+                // nodes[2].innerText = (parseInt(originalPrice)*this.value).toString();
+
+                let divImg = article.childNodes;
+                divImg[1].style.border = "1px solid red";
+                let divContent = divImg[1].childNodes;
+                divContent[0].style.border = "1px solid blue";
+                let p = divContent[0].childNodes;
+                p[2].style.border = "1px solid green";
+
+                let priceBeforeDelete = parseInt(p[2].innerText);
+                let totalPriceSpan = document.getElementById("totalPrice");
+                let totalPrice = parseInt(totalPriceSpan.innerText);
+                totalPriceSpan.innerText = (totalPrice - priceBeforeDelete).toString();
                 article.remove();
 
 
