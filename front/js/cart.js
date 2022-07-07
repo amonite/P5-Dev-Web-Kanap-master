@@ -96,7 +96,7 @@ async function loadData(){
             // Store original product price to calculate total 
             let originalPrice = pPrice.innerText;
 
-            
+            let previousQuantity = 0;
 
             input.addEventListener("change", function(){
                 let kanaps = JSON.parse(localStorage.getItem("cart"));
@@ -133,25 +133,21 @@ async function loadData(){
                     totalPrice.innerText = (parseInt(totalPrice.innerText)+(currentPrice)*-1).toString();
                 }
                 console.log("currentPrice = "+currentPrice);
-                // totalPrice.innerText = (parseInt(totalPrice.innerText)+parseInt(nodes[2].innerText));
                 
-                // let allPrices = document.getElementsByClassName("cart__item__content__description");
-                
-                // console.log("allPrices ="+allPrices.length);
-                // let nodes2 = [];
-                // for(i=0; i<allPrices.length; i++){
-                //     nodes2[i] = allPrices[i].childNodes;
-                // }
-                // console.log("nodes = "+nodes2[0][2].innerText);
-                // let priceArray = [];
-                // let finalPrice = 0;
-                // for(n=0; n<nodes2.length ;n++){
-                //     priceArray[n] = nodes[n][2].innerText;
-                //     console.log("final array = "+ priceArray[n]);
-                //     finalPrice = finalPrice + parseInt(priceArray[n]);
-                // }
-                // totalPrice.innerText = finalPrice;
+                let curentQuantity = this.value;
+                if(previousQuantity < curentQuantity ){
+                    console.log("increased !");
+                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)+1).toString();
+                }
+                else if(previousQuantity > curentQuantity){
+                    console.log("decreased !");
+                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)-1).toString();
+
+                }
+                previousQuantity = curentQuantity;
                
+                 
+
 
             });
 
@@ -183,30 +179,28 @@ async function loadData(){
                     }
                 }
 
-                // get price element 
-                // let divQuantity = this.parentElement;
                 
-                // let divSettings = divQuantity.parentElement;
-                // // divSettings.style.backgroundColor = "#000000";
-                // let divDesc = divSettings.previousElementSibling;
-                // // divDesc.style.border = "2px solid red";
-                // let nodes = divDesc.childNodes;
-                // let previousPrice = parseInt(nodes[2].innerText);
-                // nodes[2].innerText = (parseInt(originalPrice)*this.value).toString();
-
+                // get product price befoore delete 
                 let divImg = article.childNodes;
-                divImg[1].style.border = "1px solid red";
+                // divImg[1].style.border = "1px solid red";
                 let divContent = divImg[1].childNodes;
-                divContent[0].style.border = "1px solid blue";
+                // divContent[0].style.border = "1px solid blue";
                 let p = divContent[0].childNodes;
-                p[2].style.border = "1px solid green";
+                // p[2].style.border = "1px solid green";
 
                 let priceBeforeDelete = parseInt(p[2].innerText);
                 let totalPriceSpan = document.getElementById("totalPrice");
                 let totalPrice = parseInt(totalPriceSpan.innerText);
                 totalPriceSpan.innerText = (totalPrice - priceBeforeDelete).toString();
-                article.remove();
 
+                //update quantity
+                let divDel = this.parentElement;
+                let divQuantity = divDel.previousElementSibling;
+                let input = divQuantity.childNodes;
+                let quantity = input[1].value; 
+                totalQuantity.innerText = (parseInt(totalQuantity.innerText)-parseInt(quantity)).toString();
+
+                article.remove();
 
             });
 
@@ -234,7 +228,31 @@ async function loadData(){
     }
     console.log("final price = "+finalPrice);
     totalPrice.innerText = finalPrice;
+
+    // get all quantities 
+    let divNodes = [];
+    for(d=0; d<divQuantityAll.length; d++){
+        divNodes[d] = divQuantityAll[d].childNodes;
+    }
+    divNodes[0][1].style.border = "1px solid red";
+    console.log("divNodes value = "+divNodes[0][1].value);
+
+    let qTable = [];
+    let finalQuantity = 0;
+    for(i=0; i<divNodes.length; i++){
+        qTable[i] = divNodes[i][1].value;
+        console.log("qTable values = "+qTable[i]);
+        finalQuantity = finalQuantity + parseInt(qTable[i]);
+    }
+    totalQuantity.innerText = finalQuantity;
+
 }
+
+let totalQuantity = document.getElementById("totalQuantity");
+let initialValue = 0;
+totalQuantity.innerText = initialValue.toString();
+let divQuantityAll = document.getElementsByClassName("cart__item__content__settings__quantity");
+
 
 
 
@@ -258,22 +276,7 @@ function getIDs(){
 
 let orderBtn = document.getElementById("order");
 
-// function getOrderID(contact,products){
-//     let res = fetch("http://localhost:3000/api/products/order", {
-//         method: "POST",
-//         headers: {
-//             'Content-Type': "application/json;charset=utf-8"
-//         },
-//         body: JSON.stringify({contact:contact, products:products}) 
-//     });
-//     let data = res.json();
-//     console.log("order id = "+data.orderId);
-//     let input = document.getElementById("order");
-//     input.setAttribute("formaction", "./confirmation.html?id="+data.orderId);
-    
-// }
 
-// orderBtn.addEventListener("click", getOrderID(getFormData, getIDs));
 
 orderBtn.addEventListener("click", async function(e){
     e.preventDefault();
@@ -322,10 +325,7 @@ orderBtn.addEventListener("click", async function(e){
     //     console.log("error = "+error);
     // })
 
-    // let input = document.getElementById("order");
-    // input.setAttribute("formaction", "./confirmation.html?id="+data.orderId);
-    // return true;
-    //goto confirmation page and pass order id in url
+
 });
 
 function getFormData(){
