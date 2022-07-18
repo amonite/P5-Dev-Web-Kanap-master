@@ -6,7 +6,7 @@
 
 async function loadData(){
     
-    if(localStorage.length !== 0){
+    if(window.localStorage.length !== 0){
         let kanapList = [];
         
         kanapList = JSON.parse(localStorage.getItem("cart"));
@@ -306,33 +306,7 @@ orderBtn.addEventListener("click", async function(e){
         console.log("order id = "+data.orderId);
         window.location.assign("./confirmation.html?id="+data.orderId);
     }   
-    //get order id in POST response
-    // fetch("http://localhost:3000/api/products/order", {
-    //     method: "POST",
-    //     headers: {
-    //         'Content-Type': "application/json;charset=utf-8"
-    //     },
-    //     body: JSON.stringify({contact:contact, products:products}) 
-    //     })
-    //     .then(function(res){
-    //         if(res.ok){
-    //         console.log("res1 = "+res.json);
-    //         return res.json()
-    //         }
-    //     })
-    //     .then(function(data){
-    //         console.log("data = "+data);
-    //         console.log("order id = "+data.orderId);
-            
-    //         let input = document.getElementById("order");
-    //         input.setAttribute("formaction", "./confirmation.html?id="+data.orderId);
-            
-    //         // console.log("input attribute = "+input.getAttribute("formaction"));
-    //     })
-
-    //     .catch(function(error){
-    //     console.log("error = "+error);
-    // })
+  
 
 
 });

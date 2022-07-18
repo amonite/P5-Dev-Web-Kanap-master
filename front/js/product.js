@@ -88,10 +88,17 @@ async function addToCart(){
 
     kanap.quantity = document.getElementById("quantity").value;
     // console.log("kanap quantity = "+kanap.quantity);
-
+    
     kanap.color = document.getElementById("colors").value;
     // console.log("kanap color = "+kanap.color);
-
+    if(kanap.quantity > 0 && kanap.color !==""){
+        kanap.quantity = kanap.quantity;
+        kanap.color = kanap.color;
+    }
+    else{
+        alert("Vous devez spécifier une quantité et/ou une couleur pour ajouter un article au panier !");
+        return;
+    }
     /* ======================================== */
     /* populate array */
 
