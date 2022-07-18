@@ -1,7 +1,9 @@
 // load les canapés
 
 /***********************************************************************************************/
-/* Fetch request                                                                               */
+/* this function gets all the products from the API                                            */ 
+/* through a fetch request and creates all the                                                 */
+/* elements to display the products data.                                                      */                         
 /***********************************************************************************************/
 
 
@@ -54,7 +56,7 @@ function getData(){
             
         })
         .catch(function(error){
-            console.log("punaise ! " + error);
+            console.log(`error = ${error}`); //this is a test of a template string as suggested by vscode
     })
 
 }

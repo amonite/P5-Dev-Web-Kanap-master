@@ -1,9 +1,8 @@
-//car.js
+//cart.js
 
-console.log("hello");
-
-// document.getElementById('cart__items').innerText = "test !";
-
+/***********************************************************************************************/
+/* Get items from the cart (localStorage) and display them 
+/***********************************************************************************************/
 
 async function loadData(){
     
@@ -34,7 +33,7 @@ async function loadData(){
             div_itemContent.appendChild(div_itemContentDesc);
 
             let pPrice; // hack to get the price to display after the color 
-
+            let oriPrice;
             await fetch("http://localhost:3000/api/products/"+kanapList[k].id)
                 .then(function(res){
                     if(res.ok){
@@ -58,8 +57,8 @@ async function loadData(){
                     // ...
                     // get price
                     pPrice = document.createElement("p");
-                    pPrice.innerText = data.price;
-                    
+                    pPrice.innerText = data.price * kanapList[k].quantity; // p quantity * p price 
+                    oriPrice = data.price;
                     // div_itemContentDesc.appendChild(pPrice);
                     
                 })
@@ -94,7 +93,7 @@ async function loadData(){
             input.setAttribute("value", kanapList[k].quantity);
 
             // Store original product price to calculate total 
-            let originalPrice = pPrice.innerText;
+            // let originalPrice = pPrice.innerText;
 
             let previousQuantity = 0;
 
@@ -119,29 +118,34 @@ async function loadData(){
                 let divQuantity = this.parentElement;
                 
                 let divSettings = divQuantity.parentElement;
-                // divSettings.style.backgroundColor = "#000000";
+            
                 let divDesc = divSettings.previousElementSibling;
-                // divDesc.style.border = "2px solid red";
+            
                 let nodes = divDesc.childNodes;
-                let previousPrice = parseInt(nodes[2].innerText);
-                nodes[2].innerText = (parseInt(originalPrice)*this.value).toString();
-                let currentPrice = previousPrice - parseInt(nodes[2].innerText);
-                if(Math.sign(currentPrice) == 1){
-                    totalPrice.innerText = (parseInt(totalPrice.innerText)-currentPrice).toString(); 
-                }
-                else if(Math.sign(currentPrice) == -1){
-                    totalPrice.innerText = (parseInt(totalPrice.innerText)+(currentPrice)*-1).toString();
-                }
-                console.log("currentPrice = "+currentPrice);
+                let currentPrice = parseInt(nodes[2].innerText);
+              
                 
+
+                //quantity 
+                if(previousQuantity == 0){
+                    previousQuantity = this.defaultValue;
+                } 
+                console.log("previousQuantity = "+ previousQuantity);
                 let curentQuantity = this.value;
+                console.log("currentQuantity = "+ curentQuantity);
                 if(previousQuantity < curentQuantity ){
                     console.log("increased !");
                     totalQuantity.innerText = (parseInt(totalQuantity.innerText)+1).toString();
+                    nodes[2].innerText = (currentPrice + parseInt(oriPrice)).toString();
+
+                    totalPrice.innerText = (parseInt(totalPrice.innerText)+parseInt(oriPrice)).toString();
                 }
                 else if(previousQuantity > curentQuantity){
                     console.log("decreased !");
                     totalQuantity.innerText = (parseInt(totalQuantity.innerText)-1).toString();
+                    nodes[2].innerText = (currentPrice - parseInt(oriPrice)).toString();
+
+                    totalPrice.innerText = (parseInt(totalPrice.innerText)-parseInt(oriPrice)).toString();
 
                 }
                 previousQuantity = curentQuantity;
@@ -234,7 +238,7 @@ async function loadData(){
     for(d=0; d<divQuantityAll.length; d++){
         divNodes[d] = divQuantityAll[d].childNodes;
     }
-    divNodes[0][1].style.border = "1px solid red";
+    // divNodes[0][1].style.border = "1px solid red";
     console.log("divNodes value = "+divNodes[0][1].value);
 
     let qTable = [];
@@ -249,16 +253,21 @@ async function loadData(){
 }
 
 let totalQuantity = document.getElementById("totalQuantity");
+// initialize totalQuantity to avoid NAN errors
 let initialValue = 0;
 totalQuantity.innerText = initialValue.toString();
 let divQuantityAll = document.getElementsByClassName("cart__item__content__settings__quantity");
 
-
-
-
 let totalPrice = document.getElementById("totalPrice");
 
+// check if cart is empty then remove LS key;
+// if(localStorage.length !== 0){
+//     let kanapList = JSON.parse(localStorage.getItem("cart"));
+//     if(kanapList.length == 0){
+//     localStorage.removeItem("cart");
 
+//     }
+// } 
 
 loadData();
 

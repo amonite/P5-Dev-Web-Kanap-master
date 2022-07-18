@@ -18,4 +18,4 @@ document.getElementById("orderId").innerText = prod_id;
 
 // remove cart from local storage
 
-// localStorage.removeItem("cart");
+localStorage.removeItem("cart");
