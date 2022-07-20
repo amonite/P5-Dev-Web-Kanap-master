@@ -1,4 +1,4 @@
-// load les canapés
+// getData.js
 
 /***********************************************************************************************/
 /* this function gets all the products from the API                                            */ 

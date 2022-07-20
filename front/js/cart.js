@@ -167,62 +167,74 @@ async function loadData(){
             div_itemContentSettingsDelete.appendChild(pDel);
 
             pDel.addEventListener("click", function(){
-                let kanaps = JSON.parse(localStorage.getItem("cart"));
-                let article = this.closest("article");
-                let id = article.getAttribute("data-id");
-                let color = article.getAttribute("data-color");
+                let txt = "Etes vous certain de vouloir supprimer un article ?"
+                if(confirm(txt) == true){
+                    let kanaps = JSON.parse(localStorage.getItem("cart"));
+                    let article = this.closest("article");
+                    let id = article.getAttribute("data-id");
+                    let color = article.getAttribute("data-color");
 
-                console.log("clicked id = "+ id);
-                console.log("clicked color = "+ color);
+                    // console.log("clicked id = "+ id);
+                    // console.log("clicked color = "+ color);
 
-                for(k=0; k<kanaps.length; k++){
-                    if(id == kanaps[k].id && color == kanaps[k].color){
-                        
-                        kanaps.splice(k,1);
-                        localStorage.setItem("cart", JSON.stringify(kanaps));
+                    for(k=0; k<kanaps.length; k++){
+                        if(id == kanaps[k].id && color == kanaps[k].color){
+                            
+                            kanaps.splice(k,1);
+                            localStorage.setItem("cart", JSON.stringify(kanaps));
+                        }
                     }
+
+                    
+                    /* get product price befoore delete to update total quantity and total price */
+
+                    let divImg = article.childNodes;
+                    // divImg[1].style.border = "1px solid red";
+                    let divContent = divImg[1].childNodes;
+                    // divContent[0].style.border = "1px solid blue";
+                    let p = divContent[0].childNodes;
+                    // p[2].style.border = "1px solid green";
+
+                    let priceBeforeDelete = parseInt(p[2].innerText);
+                    let totalPriceSpan = document.getElementById("totalPrice");
+                    let totalPrice = parseInt(totalPriceSpan.innerText);
+                    totalPriceSpan.innerText = (totalPrice - priceBeforeDelete).toString();
+
+                    //update quantity
+                    let divDel = this.parentElement;
+                    let divQuantity = divDel.previousElementSibling;
+                    let input = divQuantity.childNodes;
+                    let quantity = input[1].value; 
+                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)-parseInt(quantity)).toString();
+
+                    article.remove();
+
+                    // check if cart is empty then remove LS key;
+                    if(window.localStorage.length !== 0){
+                        let kanapList = JSON.parse(localStorage.getItem("cart"));
+                        if(kanapList.length == 0){
+                        localStorage.removeItem("cart");
+
+                        }
+                    } 
                 }
-
-                
-                // get product price befoore delete 
-                let divImg = article.childNodes;
-                // divImg[1].style.border = "1px solid red";
-                let divContent = divImg[1].childNodes;
-                // divContent[0].style.border = "1px solid blue";
-                let p = divContent[0].childNodes;
-                // p[2].style.border = "1px solid green";
-
-                let priceBeforeDelete = parseInt(p[2].innerText);
-                let totalPriceSpan = document.getElementById("totalPrice");
-                let totalPrice = parseInt(totalPriceSpan.innerText);
-                totalPriceSpan.innerText = (totalPrice - priceBeforeDelete).toString();
-
-                //update quantity
-                let divDel = this.parentElement;
-                let divQuantity = divDel.previousElementSibling;
-                let input = divQuantity.childNodes;
-                let quantity = input[1].value; 
-                totalQuantity.innerText = (parseInt(totalQuantity.innerText)-parseInt(quantity)).toString();
-
-                article.remove();
-
+                else{
+                    return;
+                }
             });
 
         }
 
-    }
-    else{
-        console.log("LS empty !");
-    }
-    // let totalPrice = document.getElementById("totalPrice");
+    /* Get prices for all the products */
+    /* ================================*/
     let allPrices = document.getElementsByClassName("cart__item__content__description");
     
-    console.log("allPrices ="+allPrices.length);
+    // console.log("allPrices ="+allPrices.length);
     let nodes = [];
     for(i=0; i<allPrices.length; i++){
         nodes[i] = allPrices[i].childNodes;
     }
-    console.log("nodes = "+nodes[0][2].innerText);
+    // console.log("nodes = "+nodes[0][2].innerText);
     let priceArray = [];
     let finalPrice = 0;
     for(n=0; n<nodes.length ;n++){
@@ -230,46 +242,93 @@ async function loadData(){
         console.log("final array = "+ priceArray[n]);
         finalPrice = finalPrice + parseInt(priceArray[n]);
     }
-    console.log("final price = "+finalPrice);
+    // console.log("final price = "+finalPrice);
     totalPrice.innerText = finalPrice;
 
-    // get all quantities 
+    /* Get quantities for all the products */
+    /* ====================================*/
     let divNodes = [];
     for(d=0; d<divQuantityAll.length; d++){
         divNodes[d] = divQuantityAll[d].childNodes;
     }
-    // divNodes[0][1].style.border = "1px solid red";
-    console.log("divNodes value = "+divNodes[0][1].value);
+    
+    // console.log("divNodes value = "+divNodes[0][1].value);
 
     let qTable = [];
     let finalQuantity = 0;
     for(i=0; i<divNodes.length; i++){
         qTable[i] = divNodes[i][1].value;
-        console.log("qTable values = "+qTable[i]);
+        // console.log("qTable values = "+qTable[i]);
         finalQuantity = finalQuantity + parseInt(qTable[i]);
     }
     totalQuantity.innerText = finalQuantity;
 
+
+    }
+    else{
+        console.log("LS empty !");
+    }
+    
+    // /* Get prices for all the products */
+    // /* ================================*/
+    // let allPrices = document.getElementsByClassName("cart__item__content__description");
+    
+    // // console.log("allPrices ="+allPrices.length);
+    // let nodes = [];
+    // for(i=0; i<allPrices.length; i++){
+    //     nodes[i] = allPrices[i].childNodes;
+    // }
+    // // console.log("nodes = "+nodes[0][2].innerText);
+    // let priceArray = [];
+    // let finalPrice = 0;
+    // for(n=0; n<nodes.length ;n++){
+    //     priceArray[n] = nodes[n][2].innerText;
+    //     console.log("final array = "+ priceArray[n]);
+    //     finalPrice = finalPrice + parseInt(priceArray[n]);
+    // }
+    // // console.log("final price = "+finalPrice);
+    // totalPrice.innerText = finalPrice;
+
+    // /* Get quantities for all the products */
+    // /* ====================================*/
+    // let divNodes = [];
+    // for(d=0; d<divQuantityAll.length; d++){
+    //     divNodes[d] = divQuantityAll[d].childNodes;
+    // }
+    
+    // // console.log("divNodes value = "+divNodes[0][1].value);
+
+    // let qTable = [];
+    // let finalQuantity = 0;
+    // for(i=0; i<divNodes.length; i++){
+    //     qTable[i] = divNodes[i][1].value;
+    //     // console.log("qTable values = "+qTable[i]);
+    //     finalQuantity = finalQuantity + parseInt(qTable[i]);
+    // }
+    // totalQuantity.innerText = finalQuantity;
+
 }
 
+
+/***********************************************************************************************/
+/* Get elements from the page to display total quantity an total price of the cart
+/***********************************************************************************************/
+
 let totalQuantity = document.getElementById("totalQuantity");
-// initialize totalQuantity to avoid NAN errors
-let initialValue = 0;
+let totalPrice = document.getElementById("totalPrice");
+
+let initialValue = 0; // initialize totalQuantity to avoid NAN errors 
 totalQuantity.innerText = initialValue.toString();
 let divQuantityAll = document.getElementsByClassName("cart__item__content__settings__quantity");
 
-let totalPrice = document.getElementById("totalPrice");
-
-// check if cart is empty then remove LS key;
-// if(localStorage.length !== 0){
-//     let kanapList = JSON.parse(localStorage.getItem("cart"));
-//     if(kanapList.length == 0){
-//     localStorage.removeItem("cart");
-
-//     }
-// } 
+/***********************************************************************************************/
 
 loadData();
+
+
+/***********************************************************************************************/
+/* Get ids for all products in the cart to post the order
+/***********************************************************************************************/
 
 function getIDs(){
     
@@ -283,9 +342,8 @@ function getIDs(){
     return ids
 }
 
+
 let orderBtn = document.getElementById("order");
-
-
 
 orderBtn.addEventListener("click", async function(e){
     e.preventDefault();
@@ -310,6 +368,10 @@ orderBtn.addEventListener("click", async function(e){
 
 
 });
+
+/***********************************************************************************************/
+/* Get form data 
+/***********************************************************************************************/
 
 function getFormData(){
     let contact = {};
@@ -377,7 +439,3 @@ function getFormData(){
     // return contact;
 }
 
-function getCart(){
-    let cart = JSON.parse(localStorage.getItem("cart"));
-    return cart;
-}

@@ -16,9 +16,6 @@ function getProductId(){
 
 let prod_id = getProductId();
 
-// console.log(prod_id);
-
-
 /***********************************************************************************************/
 /* Get product data with product id*/
 /***********************************************************************************************/
@@ -112,10 +109,7 @@ async function addToCart(){
         // iterate cart 
         for(k=0;k<lskanapList.length;k++){
             
-            if(kanap.id == lskanapList[k].id){
-                // we can do better here with an && instead !
-                // console.log("matching ids !!!!!!!!!!");
-                if(kanap.color == lskanapList[k].color){
+            if(kanap.id == lskanapList[k].id && kanap.color == lskanapList[k].color){
                     // console.log("matching colors !!!!!!!!!!");
                     let quantity = parseInt(lskanapList[k].quantity) + parseInt(kanap.quantity);
                     kanapList[k].quantity = quantity.toString();
@@ -124,7 +118,7 @@ async function addToCart(){
                     // console.log("new quantity "+ kanapList[k].quantity);
                     
                     return;   
-                }
+                
                 
             }
             
@@ -141,6 +135,8 @@ async function addToCart(){
     }
 }
 
+document.getElementById("addToCart").addEventListener("click", addToCart);
+
 
 /***********************************************************************************************/
 /* Store product data into localStorage                                                        */
@@ -151,7 +147,8 @@ async function storeData(){
     console.log("localStorage = "+ localStorage.getItem("cart"));
 }
 
-document.getElementById("addToCart").addEventListener("click", addToCart);
+
+
 
 
 
