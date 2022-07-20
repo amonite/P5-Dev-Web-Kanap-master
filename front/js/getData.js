@@ -16,7 +16,6 @@ function getData(){
             }
         })
         .then(function(data){
-            //console.log(data); //debug
            
             for(i=0;i<data.length;i++){
 
@@ -56,7 +55,7 @@ function getData(){
             
         })
         .catch(function(error){
-            console.log(`error = ${error}`); //this is a test of a template string as suggested by vscode
+            console.log(`error = ${error}`); //use of a template string as suggested by vscode
     })
 
 }

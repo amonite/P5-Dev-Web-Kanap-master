@@ -10,7 +10,7 @@ async function loadData(){
         let kanapList = [];
         
         kanapList = JSON.parse(localStorage.getItem("cart"));
-        console.log(kanapList[0].id); //debug 
+        // console.log(kanapList[0].id); //debug 
 
         for(k=0;k<kanapList.length;k++){
 
@@ -34,6 +34,7 @@ async function loadData(){
 
             let pPrice; // hack to get the price to display after the color 
             let oriPrice;
+
             await fetch("http://localhost:3000/api/products/"+kanapList[k].id)
                 .then(function(res){
                     if(res.ok){
@@ -44,7 +45,7 @@ async function loadData(){
                 .then(function(data){
                     // get image 
                     let url = data.imageUrl;
-                    console.log("url = "+url);
+                    // console.log("url = "+url);
                     let img = document.createElement("img");
                     img.setAttribute("src", url);
                     img.setAttribute("alt", "photographie d'un canapé");
@@ -59,7 +60,6 @@ async function loadData(){
                     pPrice = document.createElement("p");
                     pPrice.innerText = data.price * kanapList[k].quantity; // p quantity * p price 
                     oriPrice = data.price;
-                    // div_itemContentDesc.appendChild(pPrice);
                     
                 })
                 .catch(function(error){
@@ -92,9 +92,7 @@ async function loadData(){
             input.setAttribute("max", "100");
             input.setAttribute("value", kanapList[k].quantity);
 
-            // Store original product price to calculate total 
-            // let originalPrice = pPrice.innerText;
-
+            /* Store original product price to calculate total */
             let previousQuantity = 0;
 
             input.addEventListener("change", function(){
@@ -104,11 +102,10 @@ async function loadData(){
 
                 let color = article.getAttribute("data-color");
                 
-                console.log("_id = "+ _id);
+                // console.log("_id = "+ _id);
                 for(k=0;k<kanaps.length;k++){
                     if(_id == kanaps[k].id && color == kanaps[k].color){
-                        // let quantity = parseInt(this.value) + parseInt(kanaps[k].quantity);
-                        // console.log(quantity);
+                        
                         kanaps[k].quantity = this.value.toString();
                         localStorage.setItem("cart", JSON.stringify(kanaps));
                     }
@@ -116,32 +113,28 @@ async function loadData(){
                 
                 // get price element 
                 let divQuantity = this.parentElement;
-                
                 let divSettings = divQuantity.parentElement;
-            
                 let divDesc = divSettings.previousElementSibling;
             
                 let nodes = divDesc.childNodes;
                 let currentPrice = parseInt(nodes[2].innerText);
-              
-                
 
                 //quantity 
                 if(previousQuantity == 0){
                     previousQuantity = this.defaultValue;
                 } 
-                console.log("previousQuantity = "+ previousQuantity);
+                // console.log("previousQuantity = "+ previousQuantity);
                 let curentQuantity = this.value;
-                console.log("currentQuantity = "+ curentQuantity);
+                // console.log("currentQuantity = "+ curentQuantity);
                 if(previousQuantity < curentQuantity ){
-                    console.log("increased !");
+                    // console.log("increased !");
                     totalQuantity.innerText = (parseInt(totalQuantity.innerText)+1).toString();
                     nodes[2].innerText = (currentPrice + parseInt(oriPrice)).toString();
 
                     totalPrice.innerText = (parseInt(totalPrice.innerText)+parseInt(oriPrice)).toString();
                 }
                 else if(previousQuantity > curentQuantity){
-                    console.log("decreased !");
+                    // console.log("decreased !");
                     totalQuantity.innerText = (parseInt(totalQuantity.innerText)-1).toString();
                     nodes[2].innerText = (currentPrice - parseInt(oriPrice)).toString();
 
@@ -150,33 +143,37 @@ async function loadData(){
                 }
                 previousQuantity = curentQuantity;
                
-                 
-
 
             });
 
             div_itemContentSettingsQauntity.appendChild(input);
 
+            /* create elements for the delete article button (Supprimer) */
             let div_itemContentSettingsDelete = document.createElement("div");
             div_itemContentSettingsDelete.classList.add("cart__item__content__settings__delete");
             div_itemContentSettings.appendChild(div_itemContentSettingsDelete);
-
             let pDel = document.createElement("p");
             pDel.classList.add("deleteItem");
             pDel.innerText = "Supprimer";
             div_itemContentSettingsDelete.appendChild(pDel);
 
+            /* when the button "Supprimer" is clicked we delete the article
+            if confirmed */
+
             pDel.addEventListener("click", function(){
+
                 let txt = "Etes vous certain de vouloir supprimer un article ?"
+
                 if(confirm(txt) == true){
+                    /* get cart from localStorage for update later */
                     let kanaps = JSON.parse(localStorage.getItem("cart"));
+
+                    /* get id and color of clicked article to remove it from the cart later */
                     let article = this.closest("article");
                     let id = article.getAttribute("data-id");
                     let color = article.getAttribute("data-color");
 
-                    // console.log("clicked id = "+ id);
-                    // console.log("clicked color = "+ color);
-
+                    /* update cart with removed article */
                     for(k=0; k<kanaps.length; k++){
                         if(id == kanaps[k].id && color == kanaps[k].color){
                             
@@ -184,29 +181,29 @@ async function loadData(){
                             localStorage.setItem("cart", JSON.stringify(kanaps));
                         }
                     }
-
                     
-                    /* get product price befoore delete to update total quantity and total price */
-
+                    /* get product price before delete to update total price */
+                    /* we use childNodes to return an array of child elements */
                     let divImg = article.childNodes;
-                    // divImg[1].style.border = "1px solid red";
                     let divContent = divImg[1].childNodes;
-                    // divContent[0].style.border = "1px solid blue";
                     let p = divContent[0].childNodes;
-                    // p[2].style.border = "1px solid green";
-
                     let priceBeforeDelete = parseInt(p[2].innerText);
                     let totalPriceSpan = document.getElementById("totalPrice");
                     let totalPrice = parseInt(totalPriceSpan.innerText);
+
+                    /* update cart total price */
                     totalPriceSpan.innerText = (totalPrice - priceBeforeDelete).toString();
 
-                    //update quantity
+                    /* get product quantity before delete to update total quantity */
                     let divDel = this.parentElement;
                     let divQuantity = divDel.previousElementSibling;
                     let input = divQuantity.childNodes;
                     let quantity = input[1].value; 
-                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)-parseInt(quantity)).toString();
 
+                    /* update cart total quantity */
+                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)-parseInt(quantity)).toString();
+                    
+                    /* remove article from the page */
                     article.remove();
 
                     // check if cart is empty then remove LS key;
@@ -219,6 +216,7 @@ async function loadData(){
                     } 
                 }
                 else{
+                    /* if user cancels the confirmation we do nothing */
                     return;
                 }
             });

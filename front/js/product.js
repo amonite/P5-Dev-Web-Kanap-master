@@ -28,7 +28,6 @@ function getProductData(){
             }
         })
         .then(function(data){
-            // console.log(data); //debug
             
             let img = document.createElement("img");
             img.setAttribute("src", data.imageUrl);
@@ -75,19 +74,26 @@ else{
 /***********************************************************************************************/
 
 async function addToCart(){
-    console.log("button clicked !") // debug 
+    // console.log("button clicked !") // debug 
     /* get page data */
-    // declare kanap object inside function because objects are passed by reference.
-    // array.push overwrites elements if kanap is declared outside addToCart() !!!
-    var kanap = {};                                 
-    kanap.id = getProductId();
-    // console.log("kanap id "+kanap.id);
-
-    kanap.quantity = document.getElementById("quantity").value;
-    // console.log("kanap quantity = "+kanap.quantity);
+    /* declare kanap object inside function because objects are passed by reference.
+    /* array.push overwrites elements if kanap is declared outside addToCart() !!!*/
+    var kanap = {};
     
+    /* get article id */
+    kanap.id = getProductId();
+
+    /* get quantity */
+    kanap.quantity = document.getElementById("quantity").value;
+    if(kanap.quantity > 100){
+        alert("vous ne pouvez pas ajouter plus que 100 articles dans le panier");
+        return;
+    }
+    
+    /* get color */
     kanap.color = document.getElementById("colors").value;
-    // console.log("kanap color = "+kanap.color);
+    
+    /* check if both input are filled */
     if(kanap.quantity > 0 && kanap.color !==""){
         kanap.quantity = kanap.quantity;
         kanap.color = kanap.color;
@@ -96,44 +102,45 @@ async function addToCart(){
         alert("Vous devez spécifier une quantité et/ou une couleur pour ajouter un article au panier !");
         return;
     }
-    /* ======================================== */
-    /* populate array */
+    
+    /* populate cart array in locaStorage */
+    /* check if there is already a cart in locaStorage */
 
     if(window.localStorage.length !== 0){
-        // console.log("local storage not empty....");
         
-        // get cart 
+        /* get cart */
         let lskanapList = JSON.parse(localStorage.getItem("cart"));
-        // console.log("lskanapList = "+lskanapList);
         
-        // iterate cart 
+        /* iterate cart */
         for(k=0;k<lskanapList.length;k++){
-            
+            /* check if colors and ids are the same and if so
+            just update the quantity of the article */
             if(kanap.id == lskanapList[k].id && kanap.color == lskanapList[k].color){
-                    // console.log("matching colors !!!!!!!!!!");
-                    let quantity = parseInt(lskanapList[k].quantity) + parseInt(kanap.quantity);
-                    kanapList[k].quantity = quantity.toString();
-                    //kanapList.push(kanap);
-                    await storeData();
-                    // console.log("new quantity "+ kanapList[k].quantity);
                     
-                    return;   
-                
-                
+                let quantity = parseInt(lskanapList[k].quantity) + parseInt(kanap.quantity);
+                kanapList[k].quantity = quantity.toString();
+                    
+                await storeData();
+                    
+                return;   
+                               
             }
             
         }
+
         kanapList.push(kanap);
         await storeData();
 
     }
     else{
+
         kanapList.push(kanap);
-        
         await storeData();
-        // console.log("new kanap added from inside if/else !");
+    
     }
 }
+
+/* get addToCart button and pass it the addToCart function when it is clicked */
 
 document.getElementById("addToCart").addEventListener("click", addToCart);
 
