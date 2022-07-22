@@ -57,16 +57,15 @@ function getProductData(){
 getProductData();
 
 /***********************************************************************************************/
-/* Check if localStorage is empty                                                             */
+/* Check if localStorage is empty and get the cart otherwise we create an array to store the 
+articles  */
 /***********************************************************************************************/
 
 if(window.localStorage.length !==0){
     var kanapList = JSON.parse(localStorage.getItem("cart"));
-    // console.log("kanapList from LS not empty = "+kanapList);
 }
 else{
     var kanapList = [];
-    // console.log("kanapList from LS empty = "+kanapList);
 }
 
 /***********************************************************************************************/

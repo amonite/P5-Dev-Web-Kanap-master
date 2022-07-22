@@ -66,15 +66,16 @@ async function loadData(){
                     console.log("error fetching data !!!!");
             })
             
-            // // get color
+            /* get color */
             let pColor = document.createElement("p");
+            /* set color */
             pColor.innerText = kanapList[k].color;
             div_itemContentDesc.appendChild(pColor);
 
-            div_itemContentDesc.appendChild(pPrice); //!!!! placed here in order to display price after color !
+            div_itemContentDesc.appendChild(pPrice); // placed here in order to display price after color !
 
 
-            // get quantity
+            /* get quantity and set quantity */
             let div_itemContentSettings = document.createElement("div");
             div_itemContentSettings.classList.add("cart__item__content__settings");
             div_itemContent.appendChild(div_itemContentSettings);
@@ -237,7 +238,7 @@ async function loadData(){
     let finalPrice = 0;
     for(n=0; n<nodes.length ;n++){
         priceArray[n] = nodes[n][2].innerText;
-        console.log("final array = "+ priceArray[n]);
+        // console.log("final array = "+ priceArray[n]);
         finalPrice = finalPrice + parseInt(priceArray[n]);
     }
     // console.log("final price = "+finalPrice);
@@ -267,43 +268,6 @@ async function loadData(){
         console.log("LS empty !");
     }
     
-    // /* Get prices for all the products */
-    // /* ================================*/
-    // let allPrices = document.getElementsByClassName("cart__item__content__description");
-    
-    // // console.log("allPrices ="+allPrices.length);
-    // let nodes = [];
-    // for(i=0; i<allPrices.length; i++){
-    //     nodes[i] = allPrices[i].childNodes;
-    // }
-    // // console.log("nodes = "+nodes[0][2].innerText);
-    // let priceArray = [];
-    // let finalPrice = 0;
-    // for(n=0; n<nodes.length ;n++){
-    //     priceArray[n] = nodes[n][2].innerText;
-    //     console.log("final array = "+ priceArray[n]);
-    //     finalPrice = finalPrice + parseInt(priceArray[n]);
-    // }
-    // // console.log("final price = "+finalPrice);
-    // totalPrice.innerText = finalPrice;
-
-    // /* Get quantities for all the products */
-    // /* ====================================*/
-    // let divNodes = [];
-    // for(d=0; d<divQuantityAll.length; d++){
-    //     divNodes[d] = divQuantityAll[d].childNodes;
-    // }
-    
-    // // console.log("divNodes value = "+divNodes[0][1].value);
-
-    // let qTable = [];
-    // let finalQuantity = 0;
-    // for(i=0; i<divNodes.length; i++){
-    //     qTable[i] = divNodes[i][1].value;
-    //     // console.log("qTable values = "+qTable[i]);
-    //     finalQuantity = finalQuantity + parseInt(qTable[i]);
-    // }
-    // totalQuantity.innerText = finalQuantity;
 
 }
 
@@ -334,7 +298,7 @@ function getIDs(){
     let ids = [];
     for(i=0; i<items.length; i++){
         ids[i] = items[i].getAttribute("data-id");
-        console.log("ids = "+ids[i]);
+        // console.log("ids = "+ids[i]);
     }
 
     return ids
@@ -372,6 +336,7 @@ orderBtn.addEventListener("click", async function(e){
 /***********************************************************************************************/
 
 function getFormData(){
+
     let contact = {};
 
     contact.firstName = document.getElementById("firstName").value;
@@ -434,6 +399,6 @@ function getFormData(){
     else{
         return false;
     }
-    // return contact;
+    
 }
 
