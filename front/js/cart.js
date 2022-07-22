@@ -340,57 +340,67 @@ function getFormData(){
     let contact = {};
 
     contact.firstName = document.getElementById("firstName").value;
+    let pfirstNameError = document.getElementById("firstNameErrorMsg");
+
     if(!contact.firstName.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
-        let p = document.getElementById("firstNameErrorMsg");
-        p.innerText = "veillez entrer un prénom qui ne comporte pas de caractères numériques";
+        // let p = document.getElementById("firstNameErrorMsg");
+        pfirstNameError.innerText = "veillez entrer un prénom qui ne comporte pas de caractères numériques";
         contact.firstName = "";
     }
     else{
         contact.firstName = document.getElementById("firstName").value;
-
+        pfirstNameError.innerText = "";
     }
     
     contact.lastName = document.getElementById("lastName").value;
+    let plastNameError = document.getElementById("lastNameErrorMsg");
+
     if(!contact.lastName.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
-        let p = document.getElementById("lastNameErrorMsg");
-        p.innerText = "veillez entrer un nom qui ne comporte pas de caractères numériques";
+        // let p = document.getElementById("lastNameErrorMsg");
+        plastNameError.innerText = "veillez entrer un nom qui ne comporte pas de caractères numériques";
         contact.lastName = "";
     }
     else{
         contact.lastName = document.getElementById("lastName").value;
-
+        plastNameError.innerText = "";
     }
 
-    contact.city = document.getElementById("lastName").value;
+    contact.city = document.getElementById("city").value;
+    let pCityError = document.getElementById("cityErrorMsg");
+
     if(!contact.city.match(/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u)){
-        let p = document.getElementById("cityErrorMsg");
-        p.innerText = "veillez entrer un nom de ville";
+        // let p = document.getElementById("cityErrorMsg");
+        pCityError.innerText = "veillez entrer un nom de ville";
         contact.city = "";
     }
     else{
-        contact.city = document.getElementById("lastName").value;
-
+        contact.city = document.getElementById("city").value;
+        pCityError.innerText = "";
     }
 
     contact.address = document.getElementById("address").value;
+    let pAddressError = document.getElementById("addressErrorMsg");
+
     if(!contact.address.match(/^([1-9][0-9]*(?:-[1-9][0-9]*)*)[\s,-]+(?:(bis|ter|qua)[\s,-]+)?([\w]+[\-\w]*)[\s,]+([-\w].+)$/gmiu)){
-        let p = document.getElementById("addressErrorMsg");
-        p.innerText = "veillez entrer une adresse postale valide";
+        // let p = document.getElementById("addressErrorMsg");
+        pAddressError.innerText = "veillez entrer une adresse postale valide";
         contact.address = "";
     }
     else{
         contact.address = document.getElementById("address").value;
-
+        pAddressError.innerText = "";
     }
     contact.email = document.getElementById("email").value;
+    let pEmailError = document.getElementById("emailErrorMsg");
+
     if(!contact.email.match(/^([a-z]|[0-9]|\-|\_|\+|\.)+\@([a-z]|[0-9]){2,}\.[a-z]{2,}(\.[a-z]{2,})?$/gm)){
-        let p = document.getElementById("emailErrorMsg");
-        p.innerText = "veillez entrez une adresse email valide";
+        // let p = document.getElementById("emailErrorMsg");
+        pEmailError.innerText = "veillez entrez une adresse email valide";
         contact.email = "";
     }
     else{
         contact.email = document.getElementById("email").value;
-
+        pEmailError.innerText = "";
     }
     if(contact.firstName !=="" && contact.lastName !=="" && contact.city !=="" && contact.address !=="" && contact.email !==""){
         return contact;
