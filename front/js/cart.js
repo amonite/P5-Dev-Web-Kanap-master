@@ -98,7 +98,7 @@ async function loadData(){
 
             input.addEventListener("change", function(){
                 let kanaps = JSON.parse(localStorage.getItem("cart"));
-                let article = this.closest("article")
+                let article = this.closest("article");
                 let _id = article.getAttribute("data-id");
 
                 let color = article.getAttribute("data-color");
@@ -128,21 +128,21 @@ async function loadData(){
                 let curentQuantity = this.value;
                 // console.log("currentQuantity = "+ curentQuantity);
                 if(previousQuantity < curentQuantity ){
-                    // console.log("increased !");
-                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)+1).toString();
-                    nodes[2].innerText = (currentPrice + parseInt(oriPrice)).toString();
+                   
+                    nodes[2].innerText = (parseInt(oriPrice)*this.value).toString();
 
-                    totalPrice.innerText = (parseInt(totalPrice.innerText)+parseInt(oriPrice)).toString();
                 }
                 else if(previousQuantity > curentQuantity){
-                    // console.log("decreased !");
-                    totalQuantity.innerText = (parseInt(totalQuantity.innerText)-1).toString();
-                    nodes[2].innerText = (currentPrice - parseInt(oriPrice)).toString();
+                 
+                    nodes[2].innerText = (parseInt(oriPrice)*this.value).toString();
 
-                    totalPrice.innerText = (parseInt(totalPrice.innerText)-parseInt(oriPrice)).toString();
 
                 }
                 previousQuantity = curentQuantity;
+
+                /* update total price and total quantity */
+                updateTotals();
+               
                
 
             });
@@ -224,24 +224,42 @@ async function loadData(){
 
         }
 
+    /* update total price and total quantity when page loads */
+    
+    updateTotals();
+    
+
+
+    }
+    else{
+        console.log("LS empty !");
+    }
+    
+
+}
+
+/* update total price and total quantity */
+
+function updateTotals(){
     /* Get prices for all the products */
     /* ================================*/
     let allPrices = document.getElementsByClassName("cart__item__content__description");
     
-    // console.log("allPrices ="+allPrices.length);
+    console.log("allPrices ="+allPrices.length);
+    
     let nodes = [];
     for(i=0; i<allPrices.length; i++){
         nodes[i] = allPrices[i].childNodes;
     }
-    // console.log("nodes = "+nodes[0][2].innerText);
+    console.log("nodes = "+nodes[0][2].innerText);
     let priceArray = [];
     let finalPrice = 0;
     for(n=0; n<nodes.length ;n++){
         priceArray[n] = nodes[n][2].innerText;
-        // console.log("final array = "+ priceArray[n]);
+        console.log("final array = "+ priceArray[n]);
         finalPrice = finalPrice + parseInt(priceArray[n]);
     }
-    // console.log("final price = "+finalPrice);
+    console.log("final price = "+finalPrice);
     totalPrice.innerText = finalPrice;
 
     /* Get quantities for all the products */
@@ -251,24 +269,16 @@ async function loadData(){
         divNodes[d] = divQuantityAll[d].childNodes;
     }
     
-    // console.log("divNodes value = "+divNodes[0][1].value);
+    console.log("divNodes value = "+divNodes[0][1].value);
 
     let qTable = [];
     let finalQuantity = 0;
     for(i=0; i<divNodes.length; i++){
         qTable[i] = divNodes[i][1].value;
-        // console.log("qTable values = "+qTable[i]);
+        console.log("qTable values = "+qTable[i]);
         finalQuantity = finalQuantity + parseInt(qTable[i]);
     }
     totalQuantity.innerText = finalQuantity;
-
-
-    }
-    else{
-        console.log("LS empty !");
-    }
-    
-
 }
 
 
